@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alien Stage: Survivors</title>
+<link rel="stylesheet" href="css/style.css?v=13">
+</head>
+<body>
+<canvas id="game"></canvas>
+<canvas id="trans" class="hidden"></canvas>
+<canvas id="twinkle" class="hidden"></canvas>
+<div id="bg"><i id="bgMap"></i><i class="spokes"></i></div>
+<button id="btnPause" class="hidden" title="Pausar (Esc)">❚❚</button>
+<button id="spBtn" class="hidden" title="Especial (E)">✦</button>
+<button id="skillBtn" class="hidden" title="Ultimate (Espaço)">★</button>
+
+<!-- LOGIN -->
+<div id="auth" class="panel">
+  <div class="logo"><span>[</span><b>ALIEN<br>STAGE</b><span>]</span></div><p class="tag">SURVIVORS</p>
+  <p class="sub">Cante até o fim da noite. Quem para de cantar é eliminado.</p>
+  <input id="user" placeholder="Usuário" maxlength="16" autocomplete="username">
+  <input id="pass" type="password" placeholder="Senha" autocomplete="current-password">
+  <div class="row"><button id="btnLogin">Entrar</button><button id="btnReg">Criar conta</button></div>
+  <button id="btnGuest" class="ghost">Jogar sem cadastro</button>
+  <p id="authMsg" class="msg"></p>
+</div>
+
+<!-- MENU PRINCIPAL -->
+<div id="menu" class="screen hidden">
+  <div class="side">
+    <div class="logo"><span>[</span><b>ALIEN<br>STAGE</b><span>]</span></div><p class="tag">SURVIVORS</p>
+    <p id="who" class="sub"></p><p id="stats" class="stats"></p><p id="mapNow" class="mapNow"></p>
+    <button class="mb primary" id="btnPlay" style="--i:0">Subir ao palco</button>
+    <button class="mb" id="btnMaps" style="--i:1">Palcos</button>
+    <button class="mb" id="btnChars" style="--i:2">Personagens</button>
+    <button class="mb codexBtn" id="btnCodex" style="--i:3">Sinergias <em id="cdxMini"></em></button>
+    <button class="mb codexBtn" id="btnTarot" style="--i:4">Cartas de Tarô <em id="trMini"></em></button>
+    <button class="mb" id="btnTrain" style="--i:5">Treino</button>
+    <button class="mb" id="btnRank" style="--i:6">Ranking</button>
+    <button class="mb ghost" id="btnOut" style="--i:7">Sair</button>
+  </div>
+  <div class="hero"><div class="stage"><i></i></div><img id="heroImg" alt=""><p id="heroName"></p></div>
+</div>
+
+<!-- SELEÇÃO DE PERSONAGEM -->
+<div id="select" class="screen hidden">
+  <div class="selTop"><h2>Escolha seu personagem</h2><p class="hint">← → personagem &nbsp; ↑ ↓ skin &nbsp; Enter confirmar &nbsp; Esc voltar</p></div>
+  <div class="selBody">
+    <div class="shardsWrap"><div class="selAura" id="selAura"></div><div class="shards" id="shards"><div class="tilt" id="tilt"><img class="base" src="assets/ui/select.webp?v=11" alt="Personagens"><div id="shardLayers"></div><div id="shardSpark"></div></div></div></div>
+    <div class="selRight">
+      <div class="selCenter">
+        <div class="preview"><div class="stage"><i></i></div><img id="prevImg" alt=""></div>
+        <div class="info" id="info"><h1 id="cName"></h1><p id="cWeapon"></p><p id="cBlurb" class="sub"></p><div id="bars"></div>
+          <div class="power"><b>Especial [E]</b> <span id="cSpecial"></span></div>
+          <div class="power"><b>Ultimate [Espaço]</b> <span id="cSkill"></span></div>
+          <div class="power"><b>Carta de Tarô</b> <span id="cTarot"></span></div></div>
+      </div>
+      <div class="skinCol"><p class="skinTitle">Skins</p><div id="skins"></div></div>
+    </div>
+  </div>
+  <div class="row selBtns"><button class="ghost" id="selBack">Voltar</button><button id="selOk" class="primary">Confirmar</button></div>
+</div>
+
+<!-- SELEÇÃO DE PALCO -->
+<div id="maps" class="screen hidden">
+  <canvas id="mapBg"></canvas><div class="mapVig"></div>
+  <div class="selTop"><h2>Escolha o palco</h2><p class="hint">← → palco &nbsp; Enter confirmar &nbsp; Esc voltar</p></div>
+  <div id="mapCards"></div>
+  <div class="row selBtns"><button class="ghost" id="mapBack">Voltar</button><button id="mapOk" class="primary">Confirmar</button></div>
+</div>
+
+<!-- SINERGIAS (poderes combinados descobertos) -->
+<div id="codex" class="screen hidden">
+  <div class="selTop"><h2>Sinergias</h2><p class="hint" id="cdxCount"></p></div>
+  <div id="cdxGrid"></div>
+  <p class="hint cdxTip">Sinergias raras surgem ao subir de nível (a partir do nv 3) e valem para os dois personagens da dupla. Escolha-as para descobrir. &nbsp; Esc voltar</p>
+  <div class="row selBtns"><button class="ghost" id="cdxBack">Voltar</button></div>
+</div>
+
+<!-- CARTAS DE TARÔ -->
+<div id="tarot" class="screen hidden">
+  <div class="selTop"><h2>Cartas de Tarô</h2><p class="hint" id="trCount"></p></div>
+  <div id="trGrid"></div>
+  <div id="trDetail"></div>
+  <p class="hint cdxTip">Cada personagem tem a sua carta. Desbloqueie jogando e evolua pelos níveis durante a partida. ← → escolhe &nbsp; Esc voltar</p>
+  <div class="row selBtns"><button class="ghost" id="trBack">Voltar</button></div>
+</div>
+
+<div id="train" class="panel hidden"><h2>Treino</h2><p id="trainNotes" class="stats"></p><div id="shop"></div><button class="ghost" data-back>Voltar</button></div>
+<div id="rank" class="panel hidden"><h2>Ranking</h2><ol id="rankList"></ol><button class="ghost" data-back>Voltar</button></div>
+
+<div id="levelup" class="panel ov hidden"><h2>Nível novo! Escolha uma melodia</h2><div id="choices"></div></div>
+
+<div id="pause" class="panel ov hidden">
+  <h1>Pausado</h1><p class="sub">WASD / setas para andar. O ataque é automático.</p>
+  <button id="pResume" class="primary">Continuar</button><button id="pRestart">Reiniciar</button><button id="pMenu" class="ghost">Menu principal</button>
+</div>
+
+<div id="deathFx" class="hidden"></div>
+<div id="over" class="panel ov hidden">
+  <div id="overImgs"></div><h1 class="glitch" id="overTitle" data-t="ELIMINADO">ELIMINADO</h1>
+  <p id="overLine" class="sub"></p><p id="overTxt" class="stats"></p><p id="overRec" class="msg"></p>
+  <button id="btnAgain" class="primary">Tentar de novo</button><button id="btnToMenu" class="ghost">Menu principal</button>
+</div>
+
+<script src="js/fx.js?v=13"></script>
+<script src="js/chars.js?v=13"></script>
+<script src="js/maps.js?v=13"></script>
+<script src="js/combos.js?v=13"></script>
+<script src="js/tarot.js?v=13"></script>
+<script src="js/api.js?v=13"></script>
+<script src="js/game.js?v=13"></script>
+<script src="js/ui.js?v=13"></script>
+<div id="ver">v13 • palcos renovados + Karma e Unknown</div>
+</body>
+</html>
